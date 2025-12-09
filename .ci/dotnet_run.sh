@@ -1,5 +1,5 @@
 #!/bin/bash
-output=$(dotnet ./openxml-validator/bin/Release/net8.0/Program.dll --$2 $1)
+output=$(dotnet ./openxml-validator/bin/Release/net10.0/Program.dll --$2 $1)
 echo $output
 echo ""
 if [[ $output == *"is not valid"* ]]; then

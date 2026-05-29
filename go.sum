@@ -57,8 +57,8 @@ github.com/unidoc/typesetting v0.1.0 h1:jsaHO752pmPhU4h8FLoRNxwzR2suBKunFFeNkFsH
 github.com/unidoc/typesetting v0.1.0/go.mod h1:kX978RCyr08RxxT45RxledSSawm4b4ohxdwSwAbewFw=
 github.com/unidoc/unichart v0.5.2 h1:DVsk7IW4ZJJJAJpLJYyKndwDDx5Z4XXgtG+GF1u9Ymo=
 github.com/unidoc/unichart v0.5.2/go.mod h1:/8yJsL49OqBOyG53JFVZOwwDXDquo/ZRMkfz9fNsVgc=
-github.com/unidoc/unioffice/v2 v2.9.0 h1:RTRGb3iwG09g28Qyx2NOT/T1FF3+/zcaji+SM/GjAX0=
-github.com/unidoc/unioffice/v2 v2.9.0/go.mod h1:3oPt1fko1MN4HeYJaP+Dcl7V1qioyIdzTcN+VpeyzAw=
+github.com/unidoc/unioffice/v2 v2.11.0 h1:Obx1b8EYkAXjXcqkMoAErc+7RR8vQ6P4joXKddP3Auc=
+github.com/unidoc/unioffice/v2 v2.11.0/go.mod h1:3oPt1fko1MN4HeYJaP+Dcl7V1qioyIdzTcN+VpeyzAw=
 github.com/unidoc/unipdf/v4 v4.8.0 h1:2p5dg76UO8KAR33mmpiIUl95/ViIo6d53SqzAq6Zrho=
 github.com/unidoc/unipdf/v4 v4.8.0/go.mod h1:TKdWXDj1xsAZbzA58/gonDVUlvRkK3R8OJe3JZw+t/g=
 github.com/unidoc/unitype v0.5.1 h1:UwTX15K6bktwKocWVvLoijIeu4JAVEAIeFqMOjvxqQs=

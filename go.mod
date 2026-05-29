@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/go-ole/go-ole v1.3.0
 	github.com/unidoc/unichart v0.5.2
-	github.com/unidoc/unioffice/v2 v2.9.0
+	github.com/unidoc/unioffice/v2 v2.11.0
 	github.com/unidoc/unipdf/v4 v4.8.0
 )
 

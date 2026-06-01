@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -51,10 +52,20 @@ func main() {
 		row.AddCell().SetNumber(d.sales)
 	}
 
+	// Derive all ranges from the data length so they stay correct if the data
+	// above changes. The header is row 1, data occupies rows 2..lastDataRow,
+	// and the totals row sits just below at totalsRow.
+	const firstDataRow = 2
+	lastDataRow := firstDataRow + len(data) - 1
+	totalsRow := lastDataRow + 1
+	dataRange := fmt.Sprintf("A1:C%d", lastDataRow)
+	withTotalsRange := fmt.Sprintf("A1:C%d", totalsRow)
+	salesRange := fmt.Sprintf("C%d:C%d", firstDataRow, lastDataRow)
+
 	// Convert the range to a "Format as Table" range. The range must cover the
 	// header row plus at least one data row. This applies an AutoFilter on the
 	// header row and a banded (alternating row color) style by default.
-	tbl := sheet.AddTable("A1:C7", "SalesTable")
+	tbl := sheet.AddTable(dataRange, "SalesTable")
 
 	// Pick a built-in style and emphasize the first column.
 	tbl.SetStyle(spreadsheet.TableStyleMedium9)
@@ -62,7 +73,7 @@ func main() {
 
 	// Add a totals row that sums the Sales column. The totals row occupies the
 	// last row of the table reference, so extend the table by one row first.
-	tbl.SetReference("A1:C8")
+	tbl.SetReference(withTotalsRange)
 	tbl.SetTotalsRow(true)
 	if firstCol, ok := tbl.Column(0); ok {
 		firstCol.SetTotalsRowLabel("Total")
@@ -72,11 +83,11 @@ func main() {
 	}
 
 	// Materialize the totals row cells so the values show when opened.
-	totalsRow := sheet.AddRow()
-	totalsRow.AddCell().SetString("Total")
-	totalsRow.AddCell() // empty cell under Quarter
+	row := sheet.AddRow()
+	row.AddCell().SetString("Total")
+	row.AddCell() // empty cell under Quarter
 	// SUBTOTAL with function 109 sums the data rows, ignoring filtered rows.
-	totalsRow.AddCell().SetFormulaRaw("SUBTOTAL(109,C2:C7)")
+	row.AddCell().SetFormulaRaw(fmt.Sprintf("SUBTOTAL(109,%s)", salesRange))
 
 	if err := ss.Validate(); err != nil {
 		log.Fatalf("error validating sheet: %s", err)

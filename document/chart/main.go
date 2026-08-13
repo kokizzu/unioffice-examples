@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/unidoc/unioffice/v2/common/license"
-	unipdflicense "github.com/unidoc/unipdf/v4/common/license"
+	unipdflicense "github.com/unidoc/unipdf/v5/common/license"
 
 	"github.com/unidoc/unichart"
 	"github.com/unidoc/unichart/dataset"
@@ -21,9 +21,9 @@ import (
 	"github.com/unidoc/unioffice/v2/measurement"
 	"github.com/unidoc/unioffice/v2/schema/soo/wml"
 
-	"github.com/unidoc/unipdf/v4/creator"
-	"github.com/unidoc/unipdf/v4/model"
-	"github.com/unidoc/unipdf/v4/render"
+	"github.com/unidoc/unipdf/v5/creator"
+	"github.com/unidoc/unipdf/v5/model"
+	"github.com/unidoc/unipdf/v5/render"
 )
 
 func init() {

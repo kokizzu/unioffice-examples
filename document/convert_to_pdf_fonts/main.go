@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 
-	unipdflicense "github.com/unidoc/unipdf/v4/common/license"
-	"github.com/unidoc/unipdf/v4/model"
+	unipdflicense "github.com/unidoc/unipdf/v5/common/license"
+	"github.com/unidoc/unipdf/v5/model"
 
 	"github.com/unidoc/unioffice/v2/common/license"
 	"github.com/unidoc/unioffice/v2/document"
@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// register fonts in more precise way
-	zcoolRegular, err := model.NewCompositePdfFontFromTTFFile("fonts/ZCOOL/ZCOOLXiaoWei-Regular.ttf")
+	zcoolRegular, err := model.NewCompositePdfFontFile("fonts/ZCOOL/ZCOOLXiaoWei-Regular.ttf")
 	if err != nil {
 		log.Fatalf("error opening font: %s\n", err)
 	}

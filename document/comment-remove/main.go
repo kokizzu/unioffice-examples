@@ -1,7 +1,9 @@
 /*
  * Copyright 2025 FoxyUtils ehf. All rights reserved.
  *
- * This example demonstrates how to remove a comment from a DOCX file.
+ * This example demonstrates how to remove a comment from a DOCX file. Removing
+ * a comment that is the root of a reply thread removes the whole thread -
+ * Word never leaves a dangling reply behind.
  */
 
 package main
@@ -33,17 +35,36 @@ func main() {
 
 	listComments(doc)
 
-	commentId := int64(2)
+	// Find the first top-level comment (a thread root, not a reply) rather
+	// than hard-coding an ID, so the example works against any document, not
+	// just the bundled sample.
+	root, ok := firstThreadRoot(doc)
+	if !ok {
+		fmt.Println("No comments to remove")
+		return
+	}
 
-	if ok := doc.RemoveComment(commentId); !ok {
+	// Removing a thread root takes any replies in its thread with it.
+	if ok := doc.RemoveComment(root.ID()); !ok {
 		fmt.Println("Failed removing comment")
 		return
 	}
 
-	fmt.Println("\nComment removed successfully.")
+	fmt.Println("\nComment removed successfully, along with any replies in its thread.")
 	fmt.Println("")
 
 	listComments(doc)
+}
+
+// firstThreadRoot returns the first top-level comment in document order (one
+// that is not itself a reply), or ok=false if the document has no comments.
+func firstThreadRoot(doc *document.Document) (comment document.Comment, ok bool) {
+	for _, c := range doc.Comments() {
+		if !c.IsReply() {
+			return c, true
+		}
+	}
+	return document.Comment{}, false
 }
 
 func listComments(doc *document.Document) {
@@ -51,23 +72,10 @@ func listComments(doc *document.Document) {
 	fmt.Printf("Document has %d comments.\n", len(comments))
 
 	for _, c := range comments {
-		cmt := c.X()
-		fmt.Printf("%d. Comment by %s: ", cmt.IdAttr, cmt.AuthorAttr)
-
-		for _, ble := range cmt.EG_BlockLevelElts {
-			for _, cbc := range ble.BlockLevelEltsChoice.EG_ContentBlockContent {
-				for _, p := range cbc.ContentBlockContentChoice.P {
-					for _, pc := range p.EG_PContent {
-						for _, crc := range pc.PContentChoice.EG_ContentRunContent {
-							for _, ric := range crc.ContentRunContentChoice.R.EG_RunInnerContent {
-								if ric.RunInnerContentChoice.T != nil {
-									fmt.Println(ric.RunInnerContentChoice.T.Content)
-								}
-							}
-						}
-					}
-				}
-			}
+		marker := ""
+		if c.IsReply() {
+			marker = " (reply)"
 		}
+		fmt.Printf("%d. Comment by %s%s: %s\n", c.ID(), c.Author(), marker, c.Text())
 	}
 }

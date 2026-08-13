@@ -1,7 +1,8 @@
 /*
  * Copyright 2025 FoxyUtils ehf. All rights reserved.
  *
- * This example demonstrates how to retrieve and display comments stored within a DOCX file.
+ * This example demonstrates how to retrieve and display comments stored within a DOCX file,
+ * including reply threads.
  */
 
 package main
@@ -10,6 +11,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/unidoc/unioffice/v2/common/license"
 	"github.com/unidoc/unioffice/v2/document"
@@ -39,27 +41,29 @@ func main() {
 
 	comments := doc.Comments()
 
-	fmt.Printf("Document has %d comments:\n", len(comments))
+	fmt.Printf("Document has %d comments:\n\n", len(comments))
 
-	// Iterate through the comments structure and display the comment text.
+	// Print each top level comment followed by its replies, indented - the
+	// same threading Word shows in its Comments pane. Comments.IsReply()
+	// tells apart thread roots from replies, and Comment.Replies() walks a
+	// thread in display order.
 	for _, c := range comments {
-		cmt := c.X()
-		fmt.Printf("%d. Comment by %s: ", cmt.IdAttr, cmt.AuthorAttr)
-
-		for _, ble := range cmt.EG_BlockLevelElts {
-			for _, cbc := range ble.BlockLevelEltsChoice.EG_ContentBlockContent {
-				for _, p := range cbc.ContentBlockContentChoice.P {
-					for _, pc := range p.EG_PContent {
-						for _, crc := range pc.PContentChoice.EG_ContentRunContent {
-							for _, ric := range crc.ContentRunContentChoice.R.EG_RunInnerContent {
-								if ric.RunInnerContentChoice.T != nil {
-									fmt.Println(ric.RunInnerContentChoice.T.Content)
-								}
-							}
-						}
-					}
-				}
-			}
+		if c.IsReply() {
+			continue
 		}
+		printThread(c, 0)
+	}
+}
+
+func printThread(c document.Comment, depth int) {
+	indent := strings.Repeat("    ", depth)
+	resolved := ""
+	if c.Done() {
+		resolved = " [resolved]"
+	}
+	fmt.Printf("%s%d. Comment by %s: %s%s\n", indent, c.ID(), c.Author(), c.Text(), resolved)
+
+	for _, reply := range c.Replies() {
+		printThread(reply, depth+1)
 	}
 }

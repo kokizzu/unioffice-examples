@@ -38,6 +38,24 @@ func main() {
 	// Close the comment block.
 	para.CloseComment(cmId)
 
+	// Reply to the comment, building a thread. Replies must be added after the
+	// comment they reply to has been closed (CloseComment), since a reply's
+	// markers are anchored right next to the thread root's.
+	firstComment := doc.Comment(cmId)
+	reply, err := firstComment.AddReply("Reviewer One", "I agree, this should be simplified.")
+	if err != nil {
+		panic(err)
+	}
+
+	// Replying to a reply still attaches to the thread root - Word threads are
+	// flat, so this appears as a second reply alongside the first.
+	if _, err := reply.AddReply("UniOffice User", "Good point, updating it now."); err != nil {
+		panic(err)
+	}
+
+	// Mark the thread as resolved once the discussion is settled.
+	firstComment.SetDone(true)
+
 	// This following paragraph will not have any comment since the comment block is closed.
 	run = para.AddRun()
 	run.AddText(" ipsum dolor sit amet consectetur adipiscing elit, urna consequat felis vehicula class ultricies mollis dictumst, aenean non a in donec nulla.")

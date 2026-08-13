@@ -133,6 +133,7 @@ func main() {
 	for _, option := range []string{"Standard shipping", "Express shipping", "Local pickup"} {
 		p := optionsField.AddParagraph()
 		p.SetNumberingDefinition(bulletDef)
+		p.SetNumberingLevel(0)
 		p.AddRun().AddText(option)
 	}
 

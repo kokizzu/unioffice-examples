@@ -35,11 +35,17 @@ func main() {
 
 	listComments(doc)
 
-	// Comment 1 is the root of a two-reply thread; removing it takes both
-	// replies with it.
-	commentId := int64(1)
+	// Find the first top-level comment (a thread root, not a reply) rather
+	// than hard-coding an ID, so the example works against any document, not
+	// just the bundled sample.
+	root, ok := firstThreadRoot(doc)
+	if !ok {
+		fmt.Println("No comments to remove")
+		return
+	}
 
-	if ok := doc.RemoveComment(commentId); !ok {
+	// Removing a thread root takes any replies in its thread with it.
+	if ok := doc.RemoveComment(root.ID()); !ok {
 		fmt.Println("Failed removing comment")
 		return
 	}
@@ -48,6 +54,17 @@ func main() {
 	fmt.Println("")
 
 	listComments(doc)
+}
+
+// firstThreadRoot returns the first top-level comment in document order (one
+// that is not itself a reply), or ok=false if the document has no comments.
+func firstThreadRoot(doc *document.Document) (comment document.Comment, ok bool) {
+	for _, c := range doc.Comments() {
+		if !c.IsReply() {
+			return c, true
+		}
+	}
+	return document.Comment{}, false
 }
 
 func listComments(doc *document.Document) {
